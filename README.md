@@ -1,6 +1,8 @@
 # SUN MONOLITH INTERPRETER V1.0.0
  
-The SUN MONOLITH EMERGENCY RESPONSE CODE COMMAND LINE INTERPRETER v1.0.0 natively supports four levels of hardware interrupts (designated by ':::', '::', ':' and ''). The standard argument library V1.0.0 consists of the following commands:
+The SUN MONOLITH EMERGENCY RESPONSE CODE COMMAND LINE INTERPRETER v1.0.0 is a custom NoSQL variant designed for deployment on the blockchain and other API3-compliant applications.
+
+It natively supports four levels of hardware interrupts (designated by ':::', '::', ':' and ''). The standard argument library V1.0.0 consists of the following commands:
 
     'ARCH',
     'ARCHPDP',
@@ -9,6 +11,7 @@ The SUN MONOLITH EMERGENCY RESPONSE CODE COMMAND LINE INTERPRETER v1.0.0 nativel
     'SS4',
     'SS5',
     'BLOCK',
+    'MAYDAY',
     'EXANDER'
     
 The extended command set also supports the following commands:
