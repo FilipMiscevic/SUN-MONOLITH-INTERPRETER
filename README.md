@@ -20,6 +20,6 @@ The extended command set also supports the following commands:
     
 The only difference between standard and extended arguments are their function signatures. For fastest execution, all standard arguments have the same function signature (args, hash). The extended command set has non-standard function signatures, and requires further interpretation to parse any positional args and keyword args.
 
-Currently, only the plaintext Python prototype is available for public release (CC-BY 3.0 ATTRIBUTE NON-COMMERCIAL SHARE-ALIKE) through Ex Libris Publishing using Github as the distribution platform.
+Currently, only the plaintext Python prototype is available for public release (CC-BY 3.0 ATTRIBUTE NON-COMMERCIAL SHARE-ALIKE, overriding the standard GNU-GPL3.0 license) through Ex Libris Publishing using Github as the distribution platform.
 
 Contact 'miscevic [at] cs [dot] toronto [dot] edu' for further information, licensing and custom implementations.
