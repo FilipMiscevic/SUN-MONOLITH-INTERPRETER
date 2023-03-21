@@ -105,6 +105,11 @@ def generate_rll_ss5(args, hash=None):
     # translate the message into the RLL-SS5 variant, with optional SOL and EOL transmission codes
     return 'SS5'
 
+# MAYDAY
+def mayday(args, hash=None):
+    publish(args, hash)
+    return check_alloc()
+
 ### apiXoracle ARG LIBRARY V1.0.0 ###
 
 STANDARD_ARGS = {
@@ -115,6 +120,7 @@ STANDARD_ARGS = {
     'SS4': generate_rll_ss4,
     'SS5': generate_rll_ss5,
     'BLOCK':publish,
+    'MAYDAY':mayday,
     'EXANDER':killswitch
 }
 
@@ -235,8 +241,8 @@ def interpret(args):
             if val is None:
                 raise InterruptedError(f"INVALID ARGS ({exec_arg}) OR KILLSWITCH ACTIVATED," +\
                                        f" STATUS: HALT \r\n\r\n{hash_string}\r\n{' '.join(vals)}")
-
-            vals.append(val)
+            elif val not in vals:
+                vals.append(val)
         else:
             parts = [s for s in exec_arg.split(':') if s]
             if parts[0] in SPECIAL_ARGS:
@@ -253,8 +259,8 @@ def interpret(args):
                 if val is None:
                     raise InterruptedError(f"INVALID ARGS OR KILLSWITCH ACTIVATED," +\
                                            f" STATUS: HALT \r\n\r\n{hash_string}\r\n{' '.join(vals)}")
-
-                vals.append(val)
+                elif val not in vals:
+                    vals.append(val)
 
     return(' '.join([hash_string] + vals))
 
