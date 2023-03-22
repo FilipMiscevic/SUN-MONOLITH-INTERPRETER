@@ -113,11 +113,12 @@ def hospital_codes(args, hash=None):
     for i in indices:
         arg = HOSPITAL_CODES[args[i+1].upper()]
         if i+2 < len(args)-1:
-            if args[i+2].upper() == 'TOTAL':
-                arg = 'Total' + arg
+            second_arg = args[i+2].upper()
+            if second_arg == 'TOTAL':
+                arg = 'Total' + arg if arg in ['GREEN','RED'] else arg
                 if i+3 < len(args)-1 and args[i+3].upper() == 'CANCEL':
                     arg += 'Cancel'
-            elif args[i+2].upper() == 'CANCEL':
+            elif second_arg == 'CANCEL':
                 arg += 'Cancel'
         friendly_args.append(arg)
     return ' '.join(friendly_args)
