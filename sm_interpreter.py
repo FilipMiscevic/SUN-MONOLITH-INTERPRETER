@@ -111,16 +111,31 @@ def hospital_codes(args, hash=None):
     indices = [i for i,x in enumerate(args) if x.upper() == 'CODE']
     friendly_args = []
     for i in indices:
-        arg = HOSPITAL_CODES[args[i+1].upper()]
+
+        # check if first_arg is not in the last position (edge case, invalid 'CODE')
+        if i+1 < len(args)-1:
+            first_arg = args[i+1].upper()
+        else:
+            break
+
+        # check if 'CODE' is valid
+        if first_arg in HOSPITAL_CODES:
+            arg = HOSPITAL_CODES[first_arg]
+        else:
+            continue
+
+        # check for and parse positional arguments ('CODE' color and 'TOTAL','CANCEL' keywords)
         if i+2 < len(args)-1:
             second_arg = args[i+2].upper()
+            print(arg)
             if second_arg == 'TOTAL':
-                arg = 'Total' + arg if arg in ['GREEN','RED'] else arg
+                arg = 'Total' + arg if first_arg in ['GREEN','GREY'] else arg
                 if i+3 < len(args)-1 and args[i+3].upper() == 'CANCEL':
                     arg += 'Cancel'
             elif second_arg == 'CANCEL':
                 arg += 'Cancel'
         friendly_args.append(arg)
+
     return ' '.join(friendly_args)
 
 # EXANDER
@@ -359,7 +374,7 @@ if __name__ == '__main__':
                         "BCD backdoor",
                         "HAM:::USB89.3003 webSDR:::FI w:::1.5k30m CHECKALLOC:CA ###",
                         "CODE WHITE",
-                        "CODE GREEN TOTAL CANCEL",
+                        "CODE PINK TOTAL CANCEL",
                         "EXANDER",
                         ])
 
