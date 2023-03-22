@@ -112,8 +112,13 @@ def hospital_codes(args, hash=None):
     friendly_args = []
     for i in indices:
         arg = HOSPITAL_CODES[args[i+1].upper()]
-        if i+2 < len(args)-1 and args[i+2].upper() == 'CANCEL':
-            arg += 'Cancel'
+        if i+2 < len(args)-1:
+            if args[i+2].upper() == 'TOTAL':
+                arg = 'Total' + arg
+                if i+3 < len(args)-1 and args[i+3].upper() == 'CANCEL':
+                    arg += 'Cancel'
+            elif args[i+2].upper() == 'CANCEL':
+                arg += 'Cancel'
         friendly_args.append(arg)
     return ' '.join(friendly_args)
 
@@ -353,7 +358,7 @@ if __name__ == '__main__':
                         "BCD backdoor",
                         "HAM:::USB89.3003 webSDR:::FI w:::1.5k30m CHECKALLOC:CA ###",
                         "CODE WHITE",
-                        "CODE ORANGE CANCEL",
+                        "CODE GREEN TOTAL CANCEL",
                         "EXANDER",
                         ])
 
