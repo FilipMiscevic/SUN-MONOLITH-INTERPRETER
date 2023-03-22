@@ -28,7 +28,7 @@ SM_VER  = parse('1.0.0')
 # ARCH
 def archive(args, hash=None):
     if 'EOF' in args:
-        args = args.split('EOF')[0]
+        args = args[args.index('EOF'):]
     return 'ARCH' # TODO: finish
 
 # ARCHPDP
@@ -36,12 +36,45 @@ def arch_pdp(args, hash=None, **kwargs):
     return archive(args, hash) # TODO: implement tape backup, move to special args
 
 # BCD
+def ascii_to_bcd(args, hash=None):
+    bcd = []
+    for char in ' '.join(args):
+        byte_string = bin(ord(char)).split('b')[1]
+        if len(byte_string) < 8:
+            byte_string = '0' * (8-len(byte_string)) + byte_string
+        print(byte_string)
+        first  = str(bin_to_decimal(byte_string[:4]))
+        second = str(bin_to_decimal(byte_string[5:]))
+        bcd.append(first+second)
+    return ''.join(bcd)
+
+def bcd_to_ascii(data):
+    ascii = ''
+    data = str(data)#.split(' ')
+    for i in range(0,len(data)-1,2):
+        first  = str(bin(int(data[i])).split('b')[1])
+        second = str(bin(int(data[i+1])).split('b')[1])
+
+        full = int(first + second, 2)
+
+        print(full)
+
+        ascii += chr( full + 48)
+    return ascii
+
+def bin_to_decimal(binary_num):
+    decimal_num = 0
+    for i in range(len(binary_num)):
+        digit = binary_num[len(binary_num) - 1 - i]
+        decimal_num += int(digit) * 2 ** i
+    return decimal_num
+
 def generate_bcd(data, hash = '', decimals = 0):
     '''
     Encode data into binary-coded decimal (BCD)
     '''
     res = 0
-    for n, b in enumerate(reversed(bytes(hash + data, 'utf-8'))):
+    for n, b in enumerate(reversed(bytes(hash + ' '.join(data), 'utf-8'))):
         res += (b & 0x0F) * 10 ** (n * 2 - decimals)
         res += (b >> 4) * 10 ** (n * 2 + 1 - decimals)
     return str(res)
@@ -49,14 +82,40 @@ def generate_bcd(data, hash = '', decimals = 0):
 # TODO: fix
 def decode_bcd(message):
     message = str(message)
+    decoded = ''
     for i in range(0,len(message)-1,2):
-        char = int(message[i:i+1])
-        yield chr(char + 48)
+        char = int(message[i:i+2])
+        decoded += chr(char + 48)
+    return decoded
 
 # BLOCK
 def publish(args, hash=None):
     # publish the instruction set to apiXoracle under the unique message ID hash
     return 'PUBLISH'
+
+# CODE
+HOSPITAL_CODES = {
+    'WHITE':'ViolentPatientOrHostage',
+    'RED':'DispatchFire',
+    'GREEN':'Evac',
+    'BLUE':'CardiacArrest',
+    'PINK':'NeonatalCardiacArrest',
+    'BLACK':'BombThreat',
+    'YELLOW':'MissingAdult',
+    'AMBER':'MissingChild',
+    'BROWN':'HAZMAT',
+    'GREY':'UtilitiesLoss',
+    'ORANGE':'ExternalMassCasualty'
+}
+def hospital_codes(args, hash=None):
+    indices = [i for i,x in enumerate(args) if x.upper() == 'CODE']
+    friendly_args = []
+    for i in indices:
+        arg = HOSPITAL_CODES[args[i+1].upper()]
+        if i+2 < len(args)-1 and args[i+2].upper() == 'CANCEL':
+            arg += 'Cancel'
+        friendly_args.append(arg)
+    return ' '.join(friendly_args)
 
 # EXANDER
 def killswitch(args, hash=None):
@@ -115,7 +174,8 @@ def mayday(args, hash=None):
 STANDARD_ARGS = {
     'ARCH':archive,
     'ARCHPDP':arch_pdp,
-    'BCD':generate_bcd,
+    'BCD':ascii_to_bcd,
+    'CODE':hospital_codes,
     'OTP': generate_otp,
     'SS4': generate_rll_ss4,
     'SS5': generate_rll_ss5,
@@ -236,7 +296,7 @@ def interpret(args):
     for exec_arg in sorted_args:
         if exec_arg in STANDARD_ARGS:
             func = STANDARD_ARGS[exec_arg]
-            val = func(args, hash)
+            val = func(orig, hash)
 
             if val is None:
                 raise InterruptedError(f"INVALID ARGS ({exec_arg}) OR KILLSWITCH ACTIVATED," +\
@@ -292,14 +352,15 @@ if __name__ == '__main__':
                         "### Sentinel global emergency response codes (cc-by-2025),",
                         "BCD backdoor",
                         "HAM:::USB89.3003 webSDR:::FI w:::1.5k30m CHECKALLOC:CA ###",
-                        "EXANDER"
+                        "CODE WHITE",
+                        "CODE ORANGE CANCEL",
+                        "EXANDER",
                         ])
 
-    #bcd = str(generate_bcd(message))#,hash='-2^#x3x5^6-feb242023-HAL-OXXIMAICCIKC')
-    #bcd2 = ' '.join([i for i in decode_bcd(bcd)])
+    #bcd = generate_bcd(message) #,hash='-2^#x3x5^6-feb242023-HAL-OXXIMAICCIKC')
+    #bcd2 = decode_bcd(bcd)
     #print(bcd,len(str(bcd)),len(message))
-    #print(bcd2,len(str(bcd2)),len(message))
-
+    #print(message+'\n',bcd2,len(str(bcd2)),len(message))
 
     digest = interpret(message)
     print(digest)
