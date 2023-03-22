@@ -1,6 +1,6 @@
 # SUN MONOLITH INTERPRETER v1.0.0
  
-Inspired by robust monolith messaging architectures developed for defense purposes, the SUN MONOLITH EMERGENCY RESPONSE CODE COMMAND LINE INTERPRETER v1.0.0 employs a custom NoSQL variant designed for potential use in hospitals, avionics, and other applications requiring mission-critical, near real-time execution and subsequent indelible archiving. It is therefore optimized for deployment on the blockchain and other API3-compliant applications, along with support for command line, MySQL, and plaintext piping.
+Inspired by robust monolith messaging architectures developed for defense purposes, the SUN MONOLITH EMERGENCY RESPONSE CODE COMMAND LINE INTERPRETER v1.0.0 employs a custom NoSQL variant designed for potential use in hospitals, avionics, and other applications requiring mission-critical, near real-time execution and subsequent indelible archiving. It is therefore optimized for deployment on the blockchain and other API3-compliant applications, along with support for command line, database (e.g., SQL-based), and plaintext piping.
 
 It natively supports four levels of hardware interrupts (designated within a command by ':::', '::', ':' and ''). The standard apiXoracle(C) argument library V1.0.0 consists of the following commands:
 
