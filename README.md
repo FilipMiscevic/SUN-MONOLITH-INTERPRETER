@@ -1,12 +1,13 @@
-# SUN MONOLITH INTERPRETER V1.0.0
+# SUN MONOLITH INTERPRETER v1.0.0
  
-The SUN MONOLITH EMERGENCY RESPONSE CODE COMMAND LINE INTERPRETER v1.0.0 is a custom NoSQL variant designed for deployment on the blockchain and other API3-compliant applications.
+Inspired by military monolith messaging architectures, the SUN MONOLITH EMERGENCY RESPONSE CODE COMMAND LINE INTERPRETER v1.0.0 is a custom NoSQL variant designed for potential use in hospitals, avionics, and other applications requiring mission-critical, near real-time execution. It is optimized for deployment on the blockchain and other API3-compliant applications, along with support for command line, MySQL, and plaintext piping.
 
-It natively supports four levels of hardware interrupts (designated by ':::', '::', ':' and ''). The standard argument library V1.0.0 consists of the following commands:
+It natively supports four levels of hardware interrupts (designated within a command by ':::', '::', ':' and ''). The standard apiXoracle argument library V1.0.0 consists of the following commands:
 
     'ARCH',
     'ARCHPDP',
     'BCD',
+    'CODE', #  support for hospital-specific codes
     'OTP',
     'SS4',
     'SS5',
@@ -21,8 +22,8 @@ The extended command set also supports the following commands:
     'v',
     'V'
     
-The only difference between standard and extended arguments are their function signatures. For fastest execution, all standard arguments have the same function signature (args, hash). The extended command set has non-standard function signatures, and requires further interpretation to parse any positional args and keyword args.
+The only difference between standard and extended arguments are their function signatures. For fastest execution, all standard arguments have the same function signature (args, hash). The extended command set has non-standard function signatures, and requires further interpretation to parse any positional args and keyword args. Note that by design, even standard args have access to the entire message and can therefore further interpret it if necessary, as in the case of hospital codes which would consist of a two- or three-word phrase to designate a specific response code (e.g., 'CODE RED', 'CODE GREEN TOTAL', or 'CODE WHITE CANCEL').
 
-Currently, only the plaintext Python prototype is available for public release (CC-BY 3.0 ATTRIBUTE NON-COMMERCIAL SHARE-ALIKE, overriding the standard GNU-GPL3.0 license) through Ex Libris Publishing using Github as the distribution platform.
+Currently, only the plaintext Python prototype is available for public release (CC-BY 3.0 ATTRIBUTE NON-COMMERCIAL SHARE-ALIKE, overriding the standard GNU-GPL 3.0 license) through Ex Libris Publishing using Github as the distribution platform.
 
-Contact 'miscevic [at] cs [dot] toronto [dot] edu' for further information, licensing and custom implementations.
+Contact ```miscevic [at] cs [dot] toronto [dot] edu``` for further information, licensing and custom implementations.
