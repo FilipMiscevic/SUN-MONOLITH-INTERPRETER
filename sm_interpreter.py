@@ -2,14 +2,14 @@
     SUN MONOLITH EMERGENCY RESPONSE CODE COMMAND LINE INTERPRETER v1.0.0 (PYTHON-PROTOTYPE)
     ALSO AVAILABLE IN C AND FORTRAN-SF/k USING THE POLYWAT INTERPRETER (FORTHCOMING)
     DISTRIBUTED UNDER CC-BY 3.0 ATTRIBUTION NON-COMMERCIAL SHARE-ALIKE
-    DISTRIBUTED BY EX LIBRIS PUBLISHING through GITHUB.COM/FilipMiscevic
+    DISTRIBUTED BY EX LIBRIS PUBLISHING through <https://github.com/FilipMiscevic/>
 
     CONFIGURED FOR PLAINTEXT AND MYSQL OUTPUT
 
     AUTHOR: FILIP (ZORAN NIKOLA) MISCEVIC (FOUNTAINHEAD CONSULTING INC., TORONTO, ON, CANADA)
     CORRESPONDANCE AND LICENSING: MISCEVIC@CS.TORONTO.EDU
 
-    DOCSTRING VERSION: 3-21-23
+    DOCSTRING VERSION: 3-22-23
 '''
 
 
@@ -17,6 +17,11 @@ import os, sys, datetime
 import hashlib, binascii
 from packaging.version import Version, parse
 
+# TODO: for out-of-the-box SS4 and SS5 support using BetterBlueBox (<https://github.com/FilipMiscevic/BetterBlueBox/>)
+#import pyduktape
+#JS_CONTEXT = None
+
+from telephony_ss import ss4, ss5, interpret_telephony
 
 # hard-coded version control
 
@@ -42,7 +47,7 @@ def ascii_to_bcd(args, hash=None):
         byte_string = bin(ord(char)).split('b')[1]
         if len(byte_string) < 8:
             byte_string = '0' * (8-len(byte_string)) + byte_string
-        print(byte_string)
+        #print(byte_string)
         first  = str(bin_to_decimal(byte_string[:4]))
         second = str(bin_to_decimal(byte_string[5:]))
         bcd.append(first+second)
@@ -57,7 +62,7 @@ def bcd_to_ascii(data):
 
         full = int(first + second, 2)
 
-        print(full)
+        #print(full)
 
         ascii += chr( full + 48)
     return ascii
@@ -107,6 +112,7 @@ HOSPITAL_CODES = {
     'GREY':'UtilitiesLoss',
     'ORANGE':'ExternalMassCasualty'
 }
+
 def hospital_codes(args, hash=None):
     indices = [i for i,x in enumerate(args) if x.upper() == 'CODE']
     friendly_args = []
@@ -127,7 +133,6 @@ def hospital_codes(args, hash=None):
         # check for and parse positional arguments ('CODE' color and 'TOTAL','CANCEL' keywords)
         if i+2 < len(args)-1:
             second_arg = args[i+2].upper()
-            print(arg)
             if second_arg == 'TOTAL':
                 arg = 'Total' + arg if first_arg in ['GREEN','GREY'] else arg
                 if i+3 < len(args)-1 and args[i+3].upper() == 'CANCEL':
@@ -175,20 +180,53 @@ def ensure_interpreter_compat(ver):
 def generate_otp(args, hash=None):
     return f'OTP-{hash}'
 
+'''
+def _setup_js_context(ss):
+    global JS_CONTEXT
+    if not JS_CONTEXT:
+        JS_CONTEXT = pyduktape.DuktapeContext() # assumes bluebox.js is in the same directory
+        setup_string = "var audioContext = new AudioContext();" +\
+                       "var toneMixer = new ToneMixer(audioContext);"
+        JS_CONTEXT.eval_js_file("bluebox.js")
+        JS_CONTEXT.eval_js(setup_string)
+    JS_CONTEXT.eval_js(f"var toneDialer = new ToneDialer(toneMixer,{ss});" +\
+                        "toneDialer.setup();")
+    return JS_CONTEXT
+'''
+
 # SS4
-def generate_rll_ss4(args, hash=None):
+def generate_bcd_ss4(args, hash=None):
     # translate the message into the RLL-SS4 variant, with optional SOL and EOL transmission codes
-    return 'SS4'
+    #context = _setup_js_context('ss4')
+    number = generate_bcd(' '.join(args),hash)
+    return interpret_telephony(number,ss4)
 
 # SS5
-def generate_rll_ss5(args, hash=None):
+def generate_bcd_ss5(args, hash=None):
     # translate the message into the RLL-SS5 variant, with optional SOL and EOL transmission codes
-    return 'SS5'
+    #context = _setup_js_context('ss5')
+    number = generate_bcd(' '.join(args),hash)
+    return interpret_telephony(number,ss5)
 
 # MAYDAY
 def mayday(args, hash=None):
     publish(args, hash)
     return check_alloc()
+
+# WATALL / POLYWAT
+def execute_all(args, hash=None):
+    error_flag = 0
+    return 'ALL-EXECUTED' if not error_flag else None
+
+# WATCOM
+def execute_com(args, hash=None):
+    error_flag = 0
+    return 'COM-EXECUTED' if not error_flag else None
+
+# WATFIV
+def execute_fiv(args, hash=None):
+    error_flag = 0
+    return 'FIV-EXECUTED' if not error_flag else None
 
 ### apiXoracle ARG LIBRARY V1.0.0 ###
 
@@ -198,10 +236,16 @@ STANDARD_ARGS = {
     'BCD':ascii_to_bcd,
     'CODE':hospital_codes,
     'OTP': generate_otp,
-    'SS4': generate_rll_ss4,
-    'SS5': generate_rll_ss5,
+    'SS4': generate_bcd_ss4,
+    'SS5': generate_bcd_ss5,
     'BLOCK':publish,
     'MAYDAY':mayday,
+
+    'WATALL':execute_all,
+    'WATCOM':execute_com,
+    'WATFIV':execute_fiv,
+    'POLYWAT':execute_all,
+
     'EXANDER':killswitch
 }
 
@@ -210,7 +254,6 @@ SPECIAL_ARGS = {
     'CHECKALLOC': check_alloc,
     'V': ensure_monolith_compat,
     'v': ensure_interpreter_compat,
-
     #'HAM':future
 }
 
@@ -368,10 +411,10 @@ if __name__ == '__main__':
                         "UNIXPROLOG",
                         "AT&T_NYC-0",
                         "### apiXoracle BLOCK PENDRESP1679647748 ###",
-                        "POLYWATT INTERPRETER v0.9 ORIGinal",
+                        "POLYWAT INTERPRETER v0.9 ORIGinal",
                         "---...---...---...---___",
                         "### Sentinel global emergency response codes (cc-by-2025),",
-                        "BCD backdoor",
+                        #"BCD backdoor",
                         "HAM:::USB89.3003 webSDR:::FI w:::1.5k30m CHECKALLOC:CA ###",
                         "CODE WHITE",
                         "CODE PINK TOTAL CANCEL",
