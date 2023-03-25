@@ -1,3 +1,4 @@
+# signalling schemas copied from BetterBlueBox (developed Filip Miscevic)
 
 mf = {1: [700, 900], 2: [700, 1100], 3: [900, 1100], 4: [700, 1300], 5: [900, 1300], 6: [1100, 1300],
           7: [700, 1500], 8: [900, 1500], 9: [1100, 1500], '*': [1100, 1700], 0: [1300, 1500], '-': [1500, 1700],
@@ -114,8 +115,8 @@ def interpret_telephony(number, signaling_system, sol_eol=True):
             except:
                 continue
             dial_string += str(signaling_system[digit]['sequence'])
-
         dial_string += parse_sequence(signaling_system['-']['sequence']) if sol_eol and '-' in signaling_system else ''
     else:
         return '*' + number + '-' if sol_eol else number
+
     return dial_string

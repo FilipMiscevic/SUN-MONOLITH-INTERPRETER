@@ -228,23 +228,30 @@ def execute_fiv(args, hash=None):
     error_flag = 0
     return 'FIV-EXECUTED' if not error_flag else None
 
+# WATFIV
+def execute_sno(args, hash=None):
+    error_flag = 0
+    return 'SNO-EXECUTED' if not error_flag else None
+
 ### apiXoracle ARG LIBRARY V1.0.0 ###
 
 STANDARD_ARGS = {
-    'ARCH':archive,
+    'ARCH':   archive,
     'ARCHPDP':arch_pdp,
-    'BCD':ascii_to_bcd,
-    'CODE':hospital_codes,
-    'OTP': generate_otp,
-    'SS4': generate_bcd_ss4,
-    'SS5': generate_bcd_ss5,
-    'BLOCK':publish,
-    'MAYDAY':mayday,
+    'BCD':    ascii_to_bcd,
+    'CODE':   hospital_codes,
+    'OTP':    generate_otp,
+    'SS4':    generate_bcd_ss4,
+    'SS5':    generate_bcd_ss5,
+    'BLOCK':  publish,
+    'MAYDAY': mayday,
 
-    'WATALL':execute_all,
-    'WATCOM':execute_com,
-    'WATFIV':execute_fiv,
+    'WATALL': execute_all,
+    'WATCOM': execute_com,
+    'WATFIV': execute_fiv,
     'POLYWAT':execute_all,
+    'SNOBOL': execute_sno,
+    'COBOL':  execute_sno,
 
     'EXANDER':killswitch
 }
