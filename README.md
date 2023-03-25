@@ -16,6 +16,8 @@ It natively supports four levels of hardware interrupts (designated within a com
     'WATCOM', # C interpreter
     'WATFIV', # FORTRAN interpreter
     'POLYWAT',# alias for 'WATALL' command
+    'SNOBOL', # SNOBOL compiler
+    'COBOL',  # COBOL compiler
     'MAYDAY', # standard avionics distress signal
     'EXANDER' # killswitch: parse up to argument position but do not 'PUBLISH'
     
